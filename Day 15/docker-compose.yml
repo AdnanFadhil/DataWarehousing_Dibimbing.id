@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: ./data_ingestion
+    container_name: web_service
+    volumes:
+      - ./data_ingestion:/app
+    depends_on:
+      - database
+    command: python data_ingestion_script.py
+    networks:
+      - app_network
+
+  database:
+    image: postgres:latest
+    container_name: db_service
+    environment:
+      POSTGRES_USER: postgre
+      POSTGRES_PASSWORD: fadhildewa11
+      POSTGRES_DB: localhost
+    volumes:
+      - ./db-init:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge
